@@ -79,7 +79,7 @@ export default class SnakeBoard extends Component {
     board[food[0]][food[1]] = 1;
 
     return (
-      <div>
+      <div className="game-board">
         {board.map((row, rowIndex) => (
           <div className="board-row" key={rowIndex}>
             {row.map((cell, colIndex) => this.renderCell(cell, colIndex))}
