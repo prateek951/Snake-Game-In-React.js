@@ -45,7 +45,7 @@ export default class SnakeBoard extends Component {
           snake: cloneSnake
         };
       });
-    }, 1000);
+    }, 200);
   }
 
   // Method to move up

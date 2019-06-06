@@ -6,6 +6,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       direction: "RIGHT",
+      score: 0,
       food: [9, 0],
       boardSize: 10
     };
@@ -21,7 +22,12 @@ export default class App extends Component {
     return [x, y];
   }
   eatFoodHandler() {
-    this.setState({ food: this.generateFood() });
+    this.setState(prevState => {
+      return {
+        score: prevState.score + 1,
+        food: this.generateFood()
+      };
+    });
   }
   keyPressHandler(event) {
     let direction;
@@ -64,7 +70,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { direction, boardSize, food } = this.state;
+    const { direction, boardSize, food, score } = this.state;
     return (
       <div className="game">
         <div className="game-board">
@@ -76,6 +82,7 @@ export default class App extends Component {
           />
           <div className="game-info">
             {/* The game information will go inside here */}
+            <div>Score : {score}</div>
           </div>
         </div>
       </div>
