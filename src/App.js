@@ -1,36 +1,55 @@
 import React, { Component } from "react";
 import { directions } from "./constants/constant";
-
+import SnakeBoard from "./components/SnakeBoard";
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      direction: "RIGHT"
+      direction: "RIGHT",
+      food: [9, 0],
+      boardSize: 10
     };
     this.bindEvents();
   }
   bindEvents() {
     this.keyPressHandler = this.keyPressHandler.bind(this);
+    this.eatFoodHandler = this.eatFoodHandler.bind(this);
+  }
+  generateFood() {
+    let x = Math.floor(Math.random() * this.state.boardSize);
+    let y = Math.floor(Math.random() * this.state.boardSize);
+    return [x, y];
+  }
+  eatFoodHandler() {
+    this.setState({ food: this.generateFood() });
   }
   keyPressHandler(event) {
     let direction;
     switch (event.keyCode) {
       case directions.LEFT:
-        direction = "LEFT";
+        if (this.state.direction !== "RIGHT") {
+          direction = "LEFT";
+        }
         break;
       case directions.UP:
-        direction = "UP";
+        if (this.state.direction !== "DOWN") {
+          direction = "UP";
+        }
         break;
       case directions.RIGHT:
-        direction = "RIGHT";
+        if (this.state.direction !== "LEFT") {
+          direction = "RIGHT";
+        }
         break;
       case directions.DOWN:
-        direction = "DOWN";
+        if (this.state.direction !== "UP") {
+          direction = "DOWN";
+        }
         break;
       default:
         break;
     }
-    if (dir) {
+    if (direction) {
       // console.log(dir);
       this.setState({ direction });
     }
@@ -45,16 +64,21 @@ export default class App extends Component {
   }
 
   render() {
-    const { direction } = this.state;
-    return ( 
+    const { direction, boardSize, food } = this.state;
+    return (
       <div className="game">
         <div className="game-board">
-          <SnakeBoard direction={direction}/>
+          <SnakeBoard
+            direction={direction}
+            size={boardSize}
+            food={food}
+            eatFood={this.eatFoodHandler}
+          />
           <div className="game-info">
-              {/* The game information will go inside here */}
+            {/* The game information will go inside here */}
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
