@@ -8,18 +8,36 @@ export default class App extends Component {
       direction: "RIGHT",
       score: 0,
       food: [9, 0],
-      boardSize: 10
+      boardSize: 10,
+      gameOver: false
     };
     this.bindEvents();
   }
   bindEvents() {
     this.keyPressHandler = this.keyPressHandler.bind(this);
     this.eatFoodHandler = this.eatFoodHandler.bind(this);
+    this.handleCollisionHandler = this.handleCollisionHandler.bind(this);
   }
   generateFood() {
     let x = Math.floor(Math.random() * this.state.boardSize);
     let y = Math.floor(Math.random() * this.state.boardSize);
     return [x, y];
+  }
+  handleCollisionHandler() {
+    window.navigator.vibrate(200);
+    this.setState(prevState => {
+      return {
+        gameOver: true,
+      };
+    });
+  }
+  handleResetHandler() {
+    this.setState(prevState => {
+      return {
+        reset: true,
+        gameOver: false
+      };
+    });
   }
   eatFoodHandler() {
     this.setState(prevState => {
@@ -79,10 +97,19 @@ export default class App extends Component {
             size={boardSize}
             food={food}
             eatFood={this.eatFoodHandler}
+            handleCollision={this.handleCollisionHandler}
           />
           <div className="game-info">
             {/* The game information will go inside here */}
             <div>Score : {score}</div>
+            <div>
+              <button
+                hidden={!this.state.gameOver}
+                onClick={this.handleResetHandler}
+              >
+                Reset
+              </button>
+            </div>
           </div>
         </div>
       </div>

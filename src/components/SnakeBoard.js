@@ -3,7 +3,8 @@ import SnakeCell from "./SnakeCell";
 export default class SnakeBoard extends Component {
   constructor(props) {
     super(props);
-
+    this.gameInterval = null;
+    this.reset = false;
     this.state = {
       // head of the snake
       snake: [[0, 3], [0, 2], [0, 1], [0, 0]]
@@ -11,43 +12,53 @@ export default class SnakeBoard extends Component {
     this.boardSize = this.props.size;
   }
   componentDidMount() {
-    setInterval(() => {
-      this.setState(prevState => {
-        let newPosition;
-        switch (this.props.direction) {
-          case "UP":
-            newPosition = this.moveUpHandler(prevState.snake[0]);
-            break;
-          case "DOWN":
-            newPosition = this.moveDownHandler(prevState.snake[0]);
-            break;
-          case "LEFT":
-            newPosition = this.moveLeftHandler(prevState.snake[0]);
-            break;
-          case "RIGHT":
-            newPosition = this.moveRightHandler(prevState.snake[0]);
-            break;
-          default:
-            break;
-        }
-        let cloneSnake = [...prevState.snake];
-        cloneSnake.unshift(newPosition);
-        if (
-          newPosition[0] === this.props.food[0] &&
-          newPosition[1] === this.props.food[1]
-        ) {
-          this.props.eatFood();
-        } else {
-          cloneSnake.pop();
-        }
-
-        return {
-          snake: cloneSnake
-        };
-      });
-    }, 200);
+    this.gameInterval = setInterval(() => {
+      if (!this.props.gameOver) {
+        this.takeStepHandler();
+      }
+    }, 100);
   }
+  takeStepHandler = () => {
+    this.setState(prevState => {
+      let newPosition;
+      switch (this.props.direction) {
+        case "UP":
+          newPosition = this.moveUpHandler(prevState.snake[0]);
+          break;
+        case "DOWN":
+          newPosition = this.moveDownHandler(prevState.snake[0]);
+          break;
+        case "LEFT":
+          newPosition = this.moveLeftHandler(prevState.snake[0]);
+          break;
+        case "RIGHT":
+          newPosition = this.moveRightHandler(prevState.snake[0]);
+          break;
+        default:
+          break;
+      }
+      let cloneSnake = [...prevState.snake];
 
+      if (
+        cloneSnake.find(c => newPosition[0] === c[0] && newPosition[1] === c[1])
+      ) {
+        this.props.handleCollision();
+      }
+      cloneSnake.unshift(newPosition);
+      if (
+        newPosition[0] === this.props.food[0] &&
+        newPosition[1] === this.props.food[1]
+      ) {
+        this.props.eatFood();
+      } else {
+        cloneSnake.pop();
+      }
+
+      return {
+        snake: cloneSnake
+      };
+    });
+  };
   // Method to move up
   moveUpHandler = ([x, y]) => [this.decrement(x), y];
   // Method to move down
@@ -65,10 +76,14 @@ export default class SnakeBoard extends Component {
   renderCell(cell, colIndex) {
     return <SnakeCell snake={cell} key={colIndex} />;
   }
+
+  getFreshBoard() {
+    return [...Array(this.boardSize)].map(() => Array(this.boardSize).fill(0));
+  }
+
   render() {
     let board = [];
-    board = [...Array(this.boardSize)].map(() => Array(this.boardSize).fill(0));
-
+    board = this.getFreshBoard();
     const { snake } = this.state;
 
     const { food } = this.props;
