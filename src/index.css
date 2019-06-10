@@ -1,11 +1,10 @@
-    
 body {
   margin: 20px;
   padding: 0;
   font-family: sans-serif;
 }
 
-.game-board{
+.game-board {
   margin: 0 auto;
   width: 80vw;
   max-width: 60vh;
@@ -37,18 +36,30 @@ body {
 
 .cell:after {
   content: "";
-  float:left;
+  float: left;
   display: block;
   padding-top: 100%;
 }
 
-.snake{
-  background: #000000
+.snake {
+  background: #8f2a2a;
 }
+
+.head {
+  background: #030202;
+}
+
+.food {
+  background: #68ca2f;
+}
+
 .game {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+.game-over {
+  text-align: center;
 }
 .game-info {
   margin: 20px;

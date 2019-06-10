@@ -1,11 +1,24 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 export default class SnakeCell extends Component {
   render() {
-    return (
-      <div className={this.props.snake ? 'cell snake' : 'cell'}>
+    let className = "cell";
+    const { snake } = this.props;
+    switch (snake) {
+      case 1:
+        className = "cell snake";
+        break;
+      case 2:
+        className = "cell head";
+        break;
+      case 3:
+        className = "cell food";
+        break;
+      default:
+        className = "cell";
+        break;
+    }
 
-      </div>
-    )
+    return <div className={className} />;
   }
 }
